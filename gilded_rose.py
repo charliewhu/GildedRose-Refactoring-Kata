@@ -12,18 +12,6 @@ class Item:
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
 
-    def update_quality(self):
-        if self.quality < 1:
-            self.sell_in -= 1
-            return
-
-        if self.sell_in > 0:
-            self.quality -= 1
-        else:
-            self.quality -= 2
-
-        self.sell_in -= 1
-
 
 class GildedRose(object):
     def __init__(self, items: list[Item]):
