@@ -1,5 +1,5 @@
-from src.gilded_rose import GildedRose
-from src.items import Item
+from ..gilded_rose import GildedRose
+from ..items import Item
 
 
 def update_single_item(item: Item):

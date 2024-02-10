@@ -1,4 +1,4 @@
-from .strategy import AssignStrategy
+from .strategies import AssignStrategy
 from .items import Item
 
 

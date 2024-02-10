@@ -1,4 +1,4 @@
-from src.items import Item
+from ..items import Item
 
 
 def test_item_repr():
