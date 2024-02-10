@@ -20,7 +20,7 @@ def test_foo():
     assert "foo" == item.name
 
 
-def test_normal_quality_and_sellin_degradation():
+def test_normal_quality_degradation():
     """
     At the end of each day our system lowers both values for every item
 
