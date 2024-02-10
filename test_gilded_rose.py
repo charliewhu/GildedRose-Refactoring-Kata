@@ -117,3 +117,12 @@ def test_conjured_items():
     """
     item = update_single_item(Item("Conjured", 15, 5))
     assert item.quality == 3
+
+
+def test_conjured_after_sell_in():
+    """
+    “Conjured” items degrade in Quality twice as fast as normal items
+    ie -4 every day with sell_in < 0
+    """
+    item = update_single_item(Item("Conjured", 0, 5))
+    assert item.quality == 1
