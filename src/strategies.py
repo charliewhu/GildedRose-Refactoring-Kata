@@ -7,6 +7,14 @@ class DefaultStrategy(abc.ABC):
     All regular items
     """
 
+    def update(self, item: Item):
+        if item.quality > 0:
+            self.update_quality(item)
+
+        self.update_sell_in(item)
+
+        return item
+
     def update_quality(self, item: Item) -> Item:
         if item.sell_in > 0:
             item.quality -= 1
@@ -87,10 +95,6 @@ class AssignStrategy:
             case _:
                 self.strategy = DefaultStrategy()
 
-    def update_item(self, item: Item) -> Item:
-        if item.quality > 0:
-            self.strategy.update_quality(item)
-
-        self.strategy.update_sell_in(item)
-
+    def execute(self, item: Item) -> Item:
+        item = self.strategy.update(item)
         return item

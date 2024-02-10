@@ -8,5 +8,5 @@ class GildedRose(object):
 
     def update_quality(self):
         for item in self.items:
-            assigned = AssignStrategy(item)
-            item = assigned.update_item(item)
+            strategy = AssignStrategy(item)
+            strategy.execute(item)
