@@ -111,9 +111,9 @@ def test_backstage_after_concert():
     assert item.quality == 0
 
 
-# def test_conjured_items():
-#     """
-#     “Conjured” items degrade in Quality twice as fast as normal items
-#     """
-#     item = update_single_item(Item("Conjured", 15, 5))
-#     assert item.quality == 3
+def test_conjured_items():
+    """
+    “Conjured” items degrade in Quality twice as fast as normal items
+    """
+    item = update_single_item(Item("Conjured", 15, 5))
+    assert item.quality == 3
