@@ -1,4 +1,4 @@
-from .strategies import AssignStrategy
+from .strategies import StrategyFinder, get_strategy
 from .items import Item
 
 
@@ -8,5 +8,6 @@ class GildedRose(object):
 
     def update_quality(self):
         for item in self.items:
-            strategy = AssignStrategy(item)
-            strategy.execute(item)
+            # strategy = get_strategy(item) # could also use functional equivalent
+            strategy = StrategyFinder.get_strategy(item)
+            strategy.update(item)

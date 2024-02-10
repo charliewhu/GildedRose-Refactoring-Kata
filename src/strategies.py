@@ -9,13 +9,13 @@ class DefaultStrategy(abc.ABC):
 
     def update(self, item: Item):
         if item.quality > 0:
-            self.update_quality(item)
+            self._update_quality(item)
 
-        self.update_sell_in(item)
+        self._update_sell_in(item)
 
         return item
 
-    def update_quality(self, item: Item) -> Item:
+    def _update_quality(self, item: Item) -> Item:
         if item.sell_in > 0:
             item.quality -= 1
         else:
@@ -23,7 +23,7 @@ class DefaultStrategy(abc.ABC):
 
         return item
 
-    def update_sell_in(self, item: Item) -> Item:
+    def _update_sell_in(self, item: Item) -> Item:
         item.sell_in -= 1
         return item
 
@@ -33,7 +33,7 @@ class AgedUpdateStrategy(DefaultStrategy):
     Brie and Tickets
     """
 
-    def update_quality(self, item: Item) -> Item:
+    def _update_quality(self, item: Item) -> Item:
         if item.sell_in > 0:
             item.quality += 1
             item.quality = min(item.quality, 50)
@@ -46,7 +46,7 @@ class ConcertTicketUpdateStrategy(AgedUpdateStrategy):
     Tickets
     """
 
-    def update_quality(self, item: Item) -> Item:
+    def _update_quality(self, item: Item) -> Item:
         if item.sell_in <= 0:
             item.quality = 0
         elif item.sell_in <= 5:
@@ -54,7 +54,7 @@ class ConcertTicketUpdateStrategy(AgedUpdateStrategy):
         elif item.sell_in <= 10:
             item.quality += 2
         else:
-            item = super().update_quality(item)
+            item = super()._update_quality(item)
 
         item.quality = min(item.quality, 50)
 
@@ -62,15 +62,15 @@ class ConcertTicketUpdateStrategy(AgedUpdateStrategy):
 
 
 class SulfurasUpdateStrategy(DefaultStrategy):
-    def update_quality(self, item: Item) -> Item:
+    def _update_quality(self, item: Item) -> Item:
         return item
 
-    def update_sell_in(self, item: Item):
+    def _update_sell_in(self, item: Item):
         return item
 
 
 class ConjuredUpdateStrategy(DefaultStrategy):
-    def update_quality(self, item: Item) -> Item:
+    def _update_quality(self, item: Item) -> Item:
         if item.sell_in > 0:
             item.quality -= 2
         else:
@@ -79,22 +79,31 @@ class ConjuredUpdateStrategy(DefaultStrategy):
         return item
 
 
-class AssignStrategy:
-    strategy: DefaultStrategy
+def get_strategy(item: Item):
+    match item.name:
+        case "Aged Brie":
+            return AgedUpdateStrategy()
+        case "Backstage passes to a TAFKAL80ETC concert":
+            return ConcertTicketUpdateStrategy()
+        case "Sulfuras, Hand of Ragnaros":
+            return SulfurasUpdateStrategy()
+        case "Conjured":
+            return ConjuredUpdateStrategy()
+        case _:
+            return DefaultStrategy()
 
-    def __init__(self, item: Item):
+
+class StrategyFinder:
+    @staticmethod
+    def get_strategy(item: Item):
         match item.name:
             case "Aged Brie":
-                self.strategy = AgedUpdateStrategy()
+                return AgedUpdateStrategy()
             case "Backstage passes to a TAFKAL80ETC concert":
-                self.strategy = ConcertTicketUpdateStrategy()
+                return ConcertTicketUpdateStrategy()
             case "Sulfuras, Hand of Ragnaros":
-                self.strategy = SulfurasUpdateStrategy()
+                return SulfurasUpdateStrategy()
             case "Conjured":
-                self.strategy = ConjuredUpdateStrategy()
+                return ConjuredUpdateStrategy()
             case _:
-                self.strategy = DefaultStrategy()
-
-    def execute(self, item: Item) -> Item:
-        item = self.strategy.update(item)
-        return item
+                return DefaultStrategy()
