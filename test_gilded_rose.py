@@ -74,18 +74,33 @@ def test_sulfuras_can_have_higher_quality():
 def test_backstage_passes():
     """
     “Backstage passes”, like aged brie, increases in Quality as its SellIn value approaches;
-    Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
-    Quality drops to 0 after the concert
     """
     item = update_single_item(Item("Backstage passes to a TAFKAL80ETC concert", 15, 5))
     assert item.quality == 6
 
+
+def test_backstage_under_10_days():
+    """
+    “Backstage passes”, like aged brie, increases in Quality as its SellIn value approaches;
+    Quality increases by 2 when there are 10 days or less
+    """
     item = update_single_item(Item("Backstage passes to a TAFKAL80ETC concert", 10, 5))
     assert item.quality == 7
 
+
+def test_backstage_under_5_days():
+    """
+    “Backstage passes”, like aged brie, increases in Quality as its SellIn value approaches;
+    Quality increases by 3 when there are 5 days or less
+    """
     item = update_single_item(Item("Backstage passes to a TAFKAL80ETC concert", 5, 5))
     assert item.quality == 8
 
+
+def test_backstage_after_concert():
+    """
+    Quality drops to 0 after the concert
+    """
     item = update_single_item(Item("Backstage passes to a TAFKAL80ETC concert", 0, 5))
     assert item.quality == 0
 
