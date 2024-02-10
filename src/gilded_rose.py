@@ -1,25 +1,15 @@
-class Item:
-    def __init__(
-        self,
-        name: str,
-        sell_in: int,
-        quality: int,
-    ):
-        self.name = name
-        self.sell_in = sell_in
-        self.quality = quality
-
-    def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+from .items import Item
 
 
 class GildedRose(object):
     def __init__(self, items: list[Item]):
         self.items = items
 
+    def classify_items(self):
+        pass
+
     def update_quality(self):
         for item in self.items:
-            # item.update_quality()
             if (
                 item.name != "Aged Brie"
                 and item.name != "Backstage passes to a TAFKAL80ETC concert"
