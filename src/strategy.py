@@ -1,14 +1,8 @@
-from typing import Protocol
-
+import abc
 from .items import Item
 
 
-class UpdateStrategy(Protocol):
-    def update_quality(self, item: Item) -> Item:
-        ...
-
-
-class DefaultStrategy:
+class DefaultStrategy(abc.ABC):
     """
     All regular items
     """
@@ -21,14 +15,22 @@ class DefaultStrategy:
 
         return item
 
+    def update_sell_in(self, item: Item) -> Item:
+        item.sell_in -= 1
+        return item
 
-class AgedUpdateStrategy:
+
+class AgedUpdateStrategy(DefaultStrategy):
     """
     Brie and Tickets
     """
 
     def update_quality(self, item: Item) -> Item:
-        ...
+        if item.sell_in > 0:
+            item.quality += 1
+            item.quality = min(item.quality, 50)
+
+        return item
 
 
 class ConcertTicketUpdateStrategy(AgedUpdateStrategy):
@@ -37,16 +39,40 @@ class ConcertTicketUpdateStrategy(AgedUpdateStrategy):
     """
 
     def update_quality(self, item: Item) -> Item:
-        ...
+        if item.sell_in <= 0:
+            item.quality = 0
+        elif item.sell_in <= 5:
+            item.quality += 3
+        elif item.sell_in <= 10:
+            item.quality += 2
+        else:
+            item = super().update_quality(item)
+
+        item.quality = min(item.quality, 50)
+
+        return item
 
 
-class SulfurasUpdateStrategy:
+class SulfurasUpdateStrategy(DefaultStrategy):
     def update_quality(self, item: Item) -> Item:
-        ...
+        return item
+
+    def update_sell_in(self, item: Item):
+        return item
+
+
+class ConjuredUpdateStrategy(DefaultStrategy):
+    def update_quality(self, item: Item) -> Item:
+        if item.sell_in > 0:
+            item.quality -= 2
+        else:
+            item.quality -= 4
+
+        return item
 
 
 class AssignStrategy:
-    strategy: UpdateStrategy
+    strategy: DefaultStrategy
 
     def __init__(self, item: Item):
         match item.name:
@@ -56,6 +82,8 @@ class AssignStrategy:
                 self.strategy = ConcertTicketUpdateStrategy()
             case "Sulfuras, Hand of Ragnaros":
                 self.strategy = SulfurasUpdateStrategy()
+            case "Conjured":
+                self.strategy = ConjuredUpdateStrategy()
             case _:
                 self.strategy = DefaultStrategy()
 
@@ -63,6 +91,6 @@ class AssignStrategy:
         if item.quality > 0:
             self.strategy.update_quality(item)
 
-        item.sell_in -= 1
+        self.strategy.update_sell_in(item)
 
         return item
