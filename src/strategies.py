@@ -1,8 +1,7 @@
-import abc
 from .items import Item
 
 
-class DefaultStrategy(abc.ABC):
+class DefaultStrategy:
     """
     All regular items
     """
