@@ -1,3 +1,4 @@
+from ..strategies import StrategyFinder
 from ..gilded_rose import GildedRose
 from ..items import Item
 
@@ -5,7 +6,7 @@ from ..items import Item
 def update_single_item(item: Item):
     items = [item]
     shop = GildedRose(items)
-    shop.update_quality()
+    shop.update_quality(StrategyFinder())
 
     return shop.items[0]
 
